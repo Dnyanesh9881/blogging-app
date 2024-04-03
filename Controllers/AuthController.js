@@ -53,7 +53,7 @@ AuthRouter.post("/login", async (req, res) => {
     });
   }
   try {
-    const userDb = await User.findUserWithLoginId({ loginId });
+    const userDb = await User.findUserWithkey({ key:loginId });
      console.log(userDb);
      const userExist=await bcrypt.compare(password, userDb.password);
      if(!userExist){

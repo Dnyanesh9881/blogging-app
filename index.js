@@ -3,6 +3,8 @@ require("dotenv").config();
 const db = require("./db");
 const AuthRouter = require("./Controllers/AuthController");
 const session = require("express-session");
+const BlogRouter = require("./Controllers/BlogController");
+const isAuth = require("./Middlewares/AuthMiddleware");
 const mongoDbsession = require("connect-mongodb-session")(session);
 
 const app = express();
@@ -21,6 +23,7 @@ app.use(
     })
   );
 app.use("/auth", AuthRouter);
+app.use("/blog",isAuth, BlogRouter);
 
 
 app.listen(process.env.PORT, () => {
