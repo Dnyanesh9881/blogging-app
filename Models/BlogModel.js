@@ -1,5 +1,6 @@
 const BlogSchema = require("../Schemas/BlogSchema");
 const { LIMIT } = require("../constants");
+const { ObjectId } = require("mongodb");
 
 const createBLog = ({ title, textBody, createDateTime, userId }) => {
   return new Promise(async (resolve, reject) => {
@@ -56,4 +57,43 @@ const getMyBlogs = ({ userId, SKIP }) => {
   });
 };
 
-module.exports = { createBLog, getAllBlogs, getMyBlogs };
+const getBlogWithId = ({ blogId }) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (!ObjectId.isValid(blogId)) reject("Invalid bloId format");
+
+      const blogDb = await BlogSchema.findOne({ _id: blogId });
+
+      if (!blogDb) reject(`No Blog found with blogId : ${blogId}`);
+      resolve(blogDb);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+const updateBlog=({title, textBody, blogId})=>{
+    return new Promise(async(resolve, reject)=>{
+
+        try {
+            const blogDb=await BlogSchema.findByIdAndUpdate({_id:blogId}, {title, textBody});
+            resolve(blogDb);
+        } catch (error) {
+            reject(error);
+        }
+    })
+};
+
+const deleteBlog=({blogId})=>{
+    return new Promise(async(resolve, reject)=>{
+      
+        try {
+            const blogDb=await BlogSchema.findOneAndDelete({_id:blogId});
+            resolve(blogDb);
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+
+module.exports = { createBLog, getAllBlogs, getMyBlogs, getBlogWithId, updateBlog, deleteBlog };

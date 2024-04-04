@@ -29,7 +29,7 @@ AuthRouter.post("/register", async (req, res) => {
   try {
     const userObj = new User({ name, username, email, password });
     const userDb = await userObj.registerUser();
-    console.log(userDb);
+   //  console.log(userDb);
     return res.send({
       status: 201,
       message: "Registration successfull",
@@ -54,7 +54,7 @@ AuthRouter.post("/login", async (req, res) => {
   }
   try {
     const userDb = await User.findUserWithkey({ key:loginId });
-     console.log(userDb);
+   //   console.log(userDb);
      const userExist=await bcrypt.compare(password, userDb.password);
      if(!userExist){
       return res.send({
@@ -62,14 +62,14 @@ AuthRouter.post("/login", async (req, res) => {
          message:"Password does not matched"
       })
      }
-     console.log(req.session);
+   //   console.log(req.session);
      req.session.isAuth=true,
      req.session.user={
       userId:userDb._id,
       email:userDb.email,
       username:userDb.username
      }
-     console.log(req.session);
+   //   console.log(req.session);
    return res.send({
       status:200,
       message:"Login Successfully"

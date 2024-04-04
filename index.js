@@ -5,6 +5,7 @@ const AuthRouter = require("./Controllers/AuthController");
 const session = require("express-session");
 const BlogRouter = require("./Controllers/BlogController");
 const isAuth = require("./Middlewares/AuthMiddleware");
+const FollowRouter = require("./Controllers/FollowController");
 const mongoDbsession = require("connect-mongodb-session")(session);
 
 const app = express();
@@ -24,7 +25,7 @@ app.use(
   );
 app.use("/auth", AuthRouter);
 app.use("/blog",isAuth, BlogRouter);
-
+app.use("/follow", isAuth, FollowRouter);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on ${process.env.PORT}`);
