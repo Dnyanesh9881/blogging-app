@@ -18,11 +18,14 @@ const createBLog = ({ title, textBody, createDateTime, userId }) => {
     }
   });
 };
-const getAllBlogs = ({ SKIP }) => {
+const getAllBlogs = ({ follwingUserIdList, SKIP }) => {
   return new Promise(async (resolve, reject) => {
-    console.log(SKIP);
+    // console.log(SKIP);
     try {
       const blogDb = await BlogSchema.aggregate([
+        // {
+        //   $match: { userId: { $in: follwingUserIdList } },
+        // },
         { $sort: { createDateTime: -1 } },
         {
           $facet: {
@@ -43,11 +46,8 @@ const getMyBlogs = ({ userId, SKIP }) => {
       const blogDb = await BlogSchema.aggregate([
         { $match: { userId: userId } },
         { $sort: { createDateTime: -1 } },
-        {
-          $facet: {
-            data: [{ $skip: SKIP }, { $limit: LIMIT }],
-          },
-        },
+        { $skip: SKIP }, 
+        { $limit: LIMIT }
       ]);
       console.log(blogDb);
       resolve(blogDb);
@@ -72,28 +72,36 @@ const getBlogWithId = ({ blogId }) => {
   });
 };
 
-const updateBlog=({title, textBody, blogId})=>{
-    return new Promise(async(resolve, reject)=>{
-
-        try {
-            const blogDb=await BlogSchema.findByIdAndUpdate({_id:blogId}, {title, textBody});
-            resolve(blogDb);
-        } catch (error) {
-            reject(error);
-        }
-    })
+const updateBlog = ({ title, textBody, blogId }) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const blogDb = await BlogSchema.findByIdAndUpdate(
+        { _id: blogId },
+        { title, textBody }
+      );
+      resolve(blogDb);
+    } catch (error) {
+      reject(error);
+    }
+  });
 };
 
-const deleteBlog=({blogId})=>{
-    return new Promise(async(resolve, reject)=>{
-      
-        try {
-            const blogDb=await BlogSchema.findOneAndDelete({_id:blogId});
-            resolve(blogDb);
-        } catch (error) {
-            reject(error);
-        }
-    })
-}
+const deleteBlog = ({ blogId }) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const blogDb = await BlogSchema.findOneAndDelete({ _id: blogId });
+      resolve(blogDb);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 
-module.exports = { createBLog, getAllBlogs, getMyBlogs, getBlogWithId, updateBlog, deleteBlog };
+module.exports = {
+  createBLog,
+  getAllBlogs,
+  getMyBlogs,
+  getBlogWithId,
+  updateBlog,
+  deleteBlog,
+};

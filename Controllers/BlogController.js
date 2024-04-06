@@ -9,6 +9,7 @@ const {
   updateBlog,
   deleteBlog,
 } = require("../Models/BlogModel");
+const { getFollowingList } = require("../Models/FollowModel");
 
 const BlogRouter = express.Router();
 
@@ -47,11 +48,17 @@ BlogRouter.post("/create-blog", async (req, res) => {
 });
 
 BlogRouter.get("/get-blog", async (req, res) => {
-  const SKIP = Number(req.query.skip) || 0;
-  console.log("in get-blog");
+  const SKIP = parseInt(req.query.skip) || 0;
+  const followerUserId=req.session.user.userId
+  console.log(followerUserId, SKIP);
   try {
-    const blogDb = await getAllBlogs({ SKIP });
-    console.log("in get-blog");
+    const followingList=await getFollowingList({followerUserId, SKIP});
+   
+    const follwingUserIdList=followingList.map(user=>user._id);
+    console.log(follwingUserIdList);
+    const blogDb = await getAllBlogs({follwingUserIdList, SKIP });
+    
+    
     if (!blogDb) {
       return res.send({
         status: 202,
