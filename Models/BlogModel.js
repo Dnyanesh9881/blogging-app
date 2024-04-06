@@ -23,9 +23,9 @@ const getAllBlogs = ({ follwingUserIdList, SKIP }) => {
     // console.log(SKIP);
     try {
       const blogDb = await BlogSchema.aggregate([
-        // {
-        //   $match: { userId: { $in: follwingUserIdList } },
-        // },
+        {
+          $match: { userId: { $in: follwingUserIdList } },
+        },
         { $sort: { createDateTime: -1 } },
         {
           $facet: {
